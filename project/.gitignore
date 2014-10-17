@@ -1,0 +1,3 @@
+# exclude sbt build artifacts
+project/target
+target/
