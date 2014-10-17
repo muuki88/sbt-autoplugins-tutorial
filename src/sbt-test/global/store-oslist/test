@@ -1,0 +1,4 @@
+# Create the awesome-os.txt file
+> awesomeOsStore
+$ exists target/awesome-os.txt
+> check-os-list

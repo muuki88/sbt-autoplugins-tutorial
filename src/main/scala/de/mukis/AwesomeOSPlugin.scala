@@ -1,7 +1,8 @@
 package de.mukis
 
 import sbt._
-import sbt.Keys.{ streams }
+import sbt.Keys.{ streams, target }
+import java.nio.charset.Charset
 
 /**
  * This plugin helps you which operating systems are awesome
@@ -14,7 +15,9 @@ object AwesomeOSPlugin extends AutoPlugin {
    */
   object autoImport {
     lazy val awesomeOsPrint = TaskKey[Unit]("awesome-os-print", "Prints all awesome operating systems")
+    lazy val awesomeOsStore = TaskKey[File]("awesome-os-store", "Stores all awesome operating systems in a file")
     lazy val awesomeOsList = SettingKey[Seq[String]]("awesome-os-list", "A list of awesome operating systems")
+    lazy val awesomeOsFileName = SettingKey[String]("awesome-os-filename", "The filename of awesome os list")
   }
 
   import autoImport._
@@ -39,8 +42,15 @@ object AwesomeOSPlugin extends AutoPlugin {
       "iOS 6",
       "iOS 7"
     ),
+    awesomeOsFileName := "awesome-os.txt",
     awesomeOsPrint := {
       awesomeOsList.value foreach (os => streams.value.log.info(os))
+    },
+    awesomeOsStore := {
+      val content = awesomeOsList.value mkString "\n"
+      val file = target.value / awesomeOsFileName.value
+      IO.write(file, content, Charset forName "UTF-8")
+      file
     }
   )
 
