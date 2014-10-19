@@ -26,32 +26,32 @@ object AwesomeOSPlugin extends AutoPlugin {
    * Provide default settings
    */
   override lazy val projectSettings = Seq(
-    awesomeOsList := Seq(
-      "Ubuntu 12.04 LTS",
-      "Ubuntu 14.04 LTS",
-      "Debian Squeeze",
-      "Fedora 20",
-      "CentOS 6",
-      "Android 4.x",
-      "Windows 2000",
-      "Windows XP",
-      "Windows 7",
-      "Windows 8.1",
-      "MacOS Maverick",
-      "MacOS Yosemite",
-      "iOS 6",
-      "iOS 7"
-    ),
+    awesomeOsList := Seq(),
     awesomeOsFileName := "awesome-os.txt",
-    awesomeOsPrint := {
-      awesomeOsList.value foreach (os => streams.value.log.info(os))
-    },
-    awesomeOsStore := {
-      val content = awesomeOsList.value mkString "\n"
-      val file = target.value / awesomeOsFileName.value
-      IO.write(file, content, Charset forName "UTF-8")
-      file
-    }
+    awesomeOsPrint := print(awesomeOsList.value, streams.value.log),
+    awesomeOsStore := store(awesomeOsList.value, target.value / awesomeOsFileName.value)
   )
+
+  /**
+   * print all operating systems to the logging output
+   *
+   * @param systems - list of operating systems
+   * @param log - logging output
+   */
+  def print(systems: Seq[String], log: Logger) {
+    systems foreach (os => log info os)
+  }
+
+  /**
+   * stores the given list of operating systems
+   *
+   * @param systems - list of operating systems
+   * @param output - target where to store the list
+   */
+  def store(systems: Seq[String], output: File): File = {
+    val content = systems mkString "\n"
+    IO.write(output, content, Charset forName "UTF-8")
+    output
+  }
 
 }
